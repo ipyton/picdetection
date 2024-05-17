@@ -22,10 +22,20 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useParams } from 'react-router-dom';
 
 function App() {
   const [age, setAge] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [access_token, set_access_token] = React.useState("===")
+  React.useEffect(()=>{
+    const params = window.location.hash.substring(1)
+
+    const searchParams = new URLSearchParams(params)
+    console.log(searchParams)
+    set_access_token(searchParams.get("access_token"))
+    console.log(searchParams.get("id_token"))
+  })
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,7 +51,6 @@ function App() {
   const handleDelete = () => {
     console.info('You clicked the delete icon.');
   };
-
   const itemData = [
     {
       img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
@@ -118,6 +127,7 @@ function App() {
 
   return (
     <Stack >
+      {access_token}
       <FormControl>
         <InputLabel id="demo-simple-select-label">Relationship</InputLabel>
         <Select
