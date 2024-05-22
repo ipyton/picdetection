@@ -7,10 +7,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Stack } from '@mui/material';
-import {Button} from '@mui/material';
-import {List} from '@mui/material';
-import {TextField} from '@mui/material';
-import {Chip} from '@mui/material';
+import { Button } from '@mui/material';
+import { List } from '@mui/material';
+import { TextField } from '@mui/material';
+import { Chip } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -23,19 +23,27 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useParams } from 'react-router-dom';
+import AuthUtil from './axios_util/AuthUtil';
 
 function App() {
   const [age, setAge] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [access_token, set_access_token] = React.useState("===")
-  React.useEffect(()=>{
-    const params = window.location.hash.substring(1)
+  const [idToken, setIdToken] = React.useState("------")
 
+  const [loggedIn, setIsLoggedIn] = React.useState(false)
+  const [isLogging, setIsLogging] = React.useState(true)
+
+
+
+  React.useEffect(() => {
+    setIsLoggedIn(true)
+    const params = window.location.search.substring(1)
     const searchParams = new URLSearchParams(params)
-    console.log(searchParams)
-    set_access_token(searchParams.get("access_token"))
-    console.log(searchParams.get("id_token"))
-  })
+    console.log(searchParams.get("code"))
+    AuthUtil.auth(searchParams.get("code"), setIdToken, setIsLoggedIn, setIsLogging)
+    //console.log(searchParams.get("code"))
+  }, [])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -125,6 +133,14 @@ function App() {
     },
   ];
 
+  if (isLogging) {
+    return <div>is login</div>
+  }
+  if (!loggedIn) {
+    return <div>login failed</div>
+  }
+
+
   return (
     <Stack >
       {access_token}
@@ -147,7 +163,7 @@ function App() {
         <Chip label="Deletable" variant="outlined" onDelete={handleDelete} />
       </Stack>
 
-      
+
 
       <TextField id="outlined-basic" label="Outlined" variant="outlined" />
 
