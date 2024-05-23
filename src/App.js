@@ -103,10 +103,13 @@ function App() {
 
 
   const onModify = () => {
-    PictureManiputingUtil.setPictureTags(items[selector].id, selectorTags)
+    PictureManiputingUtil.setPictureTags(items[selector].id, selectorTags,"modify")
   }
 
+  const handleDeleteItem = ()=> {
+    PictureManiputingUtil.setPictureTags(items[selector].id, selectorTags, "delete")
 
+  }
   const onEditsAdd = () => {
     if (editsInput && editsInput.length != 0) {
       setSelectorTags([...selectorTags, editsInput])
@@ -119,7 +122,7 @@ function App() {
   }
 
   const handleSearch = () => {
-
+    PictureManiputingUtil.getPicturesByTags(tags, relationship)
   }
 
   const handleAddTags = () => {
@@ -219,8 +222,8 @@ function App() {
             label="Age"
             onChange={handleRelationshipChange}
           >
-            <MenuItem value={10}>And</MenuItem>
-            <MenuItem value={20}>Or</MenuItem>
+            <MenuItem value={"and"}>And</MenuItem>
+            <MenuItem value={"or"}>Or</MenuItem>
           </Select>
         </FormControl>
         <Button variant="outlined" onClick={handleSearch}>Search</Button>
@@ -292,6 +295,7 @@ function App() {
             <Button variant="outlined" onClick={onEditsAdd}>Add</Button>
           </DialogContent>
           <DialogActions>
+            <Button variant="outlined" onClick={handleDeleteItem}>Delete</Button>
             <Button onClick={handleClose}>Cancel</Button>
             <Button type="submit" onClick={onModify}>Confirm</Button>
           </DialogActions>

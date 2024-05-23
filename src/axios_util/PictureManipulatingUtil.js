@@ -7,29 +7,30 @@ export default class PictureManiputingUtil {
             console.log("tags can not be null")
             return
         }
+        console.log(relationship)
+        console.log(tags)
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query"
         axios({
-            method: "get",
+            method: "post",
             url: API_ENDPOINT,
             data: {
-
-
+                relationship: relationship,
+                tags: tags
             },
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
                 'Authorization': localStorage.getItem("token")
             }
 
         }).catch(error => {
-
+            console.log(error)
         }).then(response => {
-
+            console.log(response)
         })
 
     }
 
 
-    static setPictureTags(pictureId, tags) {
+    static setPictureTags(pictureId, tags, operation) {
         if (!tags || !pictureId) {
             console.log("tags/pictures can not be null")
             return
@@ -39,7 +40,9 @@ export default class PictureManiputingUtil {
             method: "post",
             url: API_ENDPOINT,
             data: {
-
+                id:pictureId,
+                operation:operation,
+                tags:tags
             },
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -54,8 +57,6 @@ export default class PictureManiputingUtil {
 
 
     }
-
-
 
     static uploadPic(pic, setUploadProgress) {
         console.log(pic)
