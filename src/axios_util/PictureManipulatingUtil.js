@@ -3,7 +3,7 @@ export default class PictureManiputingUtil {
 
 
     static getPicturesByTags(tags, relationship) {
-        if (!tags) {
+        if (!tags || tags.length === 0 || relationship === null) {
             console.log("tags can not be null")
             return
         }
@@ -40,9 +40,9 @@ export default class PictureManiputingUtil {
             method: "post",
             url: API_ENDPOINT,
             data: {
-                id:pictureId,
-                operation:operation,
-                tags:tags
+                id: pictureId,
+                operation: operation,
+                tags: tags
             },
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",

@@ -111,7 +111,7 @@ function App() {
 
   }
   const onEditsAdd = () => {
-    if (editsInput && editsInput.length != 0) {
+    if (editsInput && editsInput.length !== 0) {
       setSelectorTags([...selectorTags, editsInput])
       setEditsInput("")
 
