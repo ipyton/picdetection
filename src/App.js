@@ -52,7 +52,7 @@ function App() {
   const [tag, setTag] = React.useState("")
   const [selector, setSelector] = React.useState(0)
   const [editsInput, setEditsInput] = React.useState("")
-
+  const [uploadProgress, setUploadProgress] = React.useState(0)
   const [items, setItems] = React.useState([
     {
       img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
@@ -92,10 +92,9 @@ function App() {
   const [selectorTags, setSelectorTags] = React.useState([])
 
   React.useEffect(() => {
-    setIsLoggedIn(true)
+    console.log("he;lo")
     const params = window.location.search.substring(1)
     const searchParams = new URLSearchParams(params)
-    console.log(searchParams.get("code"))
     AuthUtil.auth(searchParams.get("code"), setIdToken, setIsLoggedIn, setIsLogging)
     //console.log(searchParams.get("code"))
   }, [])
@@ -117,7 +116,6 @@ function App() {
   }
   const onEditChange = (event) => {
     setEditsInput(event.target.value)
-
   }
 
   const handleSearch = () => {
@@ -132,15 +130,11 @@ function App() {
 
   }
 
-
-
-
   const handleInputChange = (event) => {
     setTag(event.target.value)
   }
 
   const handleClickOpen = (idx) => {
-
     return () => {
       setSelector(idx)
       console.log(idx)
@@ -181,7 +175,13 @@ function App() {
 
   const handleOnFileChange = (event) => {
     console.log(event.target.files[0])
-    PictureManiputingUtil.uploadPic(event.target.files[0])
+
+    const file = event.target.files[0]
+    if (file.type !== "image/jpeg") {
+      console.log("error input")
+      return
+    }
+    PictureManiputingUtil.uploadPic(event.target.files[0], setUploadProgress)
   }
 
 
@@ -261,7 +261,7 @@ function App() {
           </ImageListItem>
         ))}
       </ImageList>
-      <React.Fragment sx={{ width: "50%" }}>
+      <React.Fragment >
 
         <Dialog
           open={open}

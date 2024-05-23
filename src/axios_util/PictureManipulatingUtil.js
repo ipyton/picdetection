@@ -2,7 +2,7 @@ import axios from "axios"
 export default class PictureManiputingUtil {
 
 
-    static getPicturesByTags(tags,relationship) {
+    static getPicturesByTags(tags, relationship) {
         if (!tags) {
             console.log("tags can not be null")
             return
@@ -11,7 +11,7 @@ export default class PictureManiputingUtil {
         axios({
             method: "get",
             url: API_ENDPOINT,
-            data:{
+            data: {
 
 
             },
@@ -30,7 +30,7 @@ export default class PictureManiputingUtil {
 
 
     static setPictureTags(pictureId, tags) {
-        if (!tags||!pictureId) {
+        if (!tags || !pictureId) {
             console.log("tags/pictures can not be null")
             return
         }
@@ -38,7 +38,7 @@ export default class PictureManiputingUtil {
         axios({
             method: "post",
             url: API_ENDPOINT,
-            data:{
+            data: {
 
             },
             headers: {
@@ -51,13 +51,14 @@ export default class PictureManiputingUtil {
         }).then(response => {
 
         })
-        
+
 
     }
 
 
 
     static uploadPic(pic, setUploadProgress) {
+        console.log(pic)
         if (!pic || !setUploadProgress) {
             console.log("invalid input")
             return
@@ -76,10 +77,10 @@ export default class PictureManiputingUtil {
         }).catch(error => {
             console.log(error)
         }).then(response => {
-            console.log(response)
-            axios.put(response.data, pic, {
+            console.log(JSON.parse(response.data.body).presignedUrl)
+            axios.put(JSON.parse(response.data.body).presignedUrl, pic, {
                 headers: {
-                    "Content-Type": "application/png",
+                    "Content-Type": "image/jpeg",
                 },
                 onUploadProgress: (progressEvent) => {
                     const percentCompleted = Math.round(
@@ -88,7 +89,9 @@ export default class PictureManiputingUtil {
                     setUploadProgress(percentCompleted);
                     console.log(`Upload Progress: ${percentCompleted}%`);
                 },
-            });
+            }).catch(error => {
+                console.log(error)
+            })
 
         })
 

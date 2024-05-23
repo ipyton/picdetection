@@ -26,15 +26,14 @@ export default class AuthUtil {
             console.log(err)
             setIsLoggedIn(false)
             setIsLogging(false)
+            return
         }).then((response) => {
-
             if (response && response.data && response.data.id_token) {
                 setIdToken(response.data.id_token)
                 localStorage.setItem("token", response.data.id_token)
                 setIsLoggedIn(true)
                 setIsLogging(false)
             } else {
-                setIsLoggedIn(false)
                 setIsLogging(false)
             }
         })
