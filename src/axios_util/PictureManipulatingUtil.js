@@ -1,0 +1,99 @@
+import axios from "axios"
+export default class PictureManiputingUtil {
+
+
+    static getPicturesByTags(tags,relationship) {
+        if (!tags) {
+            console.log("tags can not be null")
+            return
+        }
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query"
+        axios({
+            method: "get",
+            url: API_ENDPOINT,
+            data:{
+
+
+            },
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': localStorage.getItem("token")
+            }
+
+        }).catch(error => {
+
+        }).then(response => {
+
+        })
+
+    }
+
+
+    static setPictureTags(pictureId, tags) {
+        if (!tags||!pictureId) {
+            console.log("tags/pictures can not be null")
+            return
+        }
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/modify"
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data:{
+
+            },
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': localStorage.getItem("token")
+            }
+
+        }).catch(error => {
+
+        }).then(response => {
+
+        })
+        
+
+    }
+
+
+
+    static uploadPic(pic, setUploadProgress) {
+        if (!pic || !setUploadProgress) {
+            console.log("invalid input")
+            return
+        }
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/upload"
+
+        // GET request: presigned URL
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': localStorage.getItem("token")
+            }
+
+        }).catch(error => {
+            console.log(error)
+        }).then(response => {
+            console.log(response)
+            axios.put(response.data, pic, {
+                headers: {
+                    "Content-Type": "application/png",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setUploadProgress(percentCompleted);
+                    console.log(`Upload Progress: ${percentCompleted}%`);
+                },
+            });
+
+        })
+
+    }
+
+
+
+}
