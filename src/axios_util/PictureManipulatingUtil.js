@@ -1,9 +1,10 @@
 import axios from "axios"
 import Qs from "qs"
+
 export default class PictureManiputingUtil {
 
 
-    static getPicturesByTags(tags, relationship,setItems) {
+    static getPicturesByTags(tags, relationship, setItems) {
         if (!tags || tags.length === 0 || relationship === null) {
             console.log("tags can not be null")
             return
@@ -64,35 +65,35 @@ export default class PictureManiputingUtil {
     //     }
     //     // const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/upload"
 
-    //     // const reader = new FileReader();
+    // const reader = new FileReader();
 
-    //     // reader.onload = function (e) {
-    //     //     const base64String = e.target.result;
+    // reader.onload = function (e) {
+    //     const base64String = e.target.result;
 
-    //     //     axios({
-    //     //         method: "post",
-    //     //         data: {
-    //     //             image: base64String
-    //     //         },
-    //     //         url: API_ENDPOINT,
-    //     //         headers: {
-    //     //             // "Content-Type": "application/x-www-form-urlencoded",
-    //     //             'Authorization': localStorage.getItem("token")
-    //     //         }
+    //     axios({
+    //         method: "post",
+    //         data: {
+    //             image: base64String
+    //         },
+    //         url: API_ENDPOINT,
+    //         headers: {
+    //             // "Content-Type": "application/x-www-form-urlencoded",
+    //             'Authorization': localStorage.getItem("token")
+    //         }
 
-    //     //     }).catch(error => {
-    //     //         console.log(error)
-    //     //     }).then(response => {
-    //     //         console.log(response)
+    //     }).catch(error => {
+    //         console.log(error)
+    //     }).then(response => {
+    //         console.log(response)
 
-    //     //     })
-    //     // };
+    //     })
+    // };
 
-    //     // reader.onerror = function (error) {
-    //     //     console.error('Error reading file:', error);
-    //     // };
+    // reader.onerror = function (error) {
+    //     console.error('Error reading file:', error);
+    // };
 
-    //     // reader.readAsDataURL(pic);
+    // reader.readAsDataURL(pic);
 
     //     axios({
     //         method: "post",
@@ -173,49 +174,47 @@ export default class PictureManiputingUtil {
 
     }
 
-    static picForPics(picture, setUploadProgress) {
+    static picForPics(picture, setUploadProgress,setItems) {
         if (!picture) {
             return
         }
-        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/picForPics"
-        axios({
-            method: "post",
-            url: API_ENDPOINT,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                'Authorization': localStorage.getItem("token")
-            }
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/pic_for_pics"
+        console.log("upload")
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+            console.log("-=-=-=-=-=-=")
+            axios({
+                method: "post",
+                url: API_ENDPOINT,
+                data: { pic: base64String }
 
-        }).catch(error => {
-            console.log(error)
-        }).then(response => {
-            console.log(JSON.parse(response.data.body).presignedUrl)
-            axios.put(JSON.parse(response.data.body).presignedUrl, picture, {
-                headers: {
-                    "Content-Type": "image/jpeg",
-                },
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    setUploadProgress(percentCompleted);
-                    console.log(`Upload Progress: ${percentCompleted}%`);
-                },
             }).catch(error => {
                 console.log(error)
+            }).then(response => {
+                if (!response || !response.data) {
+                    return
+                }
+                setItems(JSON.parse(response.data.body))
+                console.log(response)
             })
 
-        })
+        }
+        reader.onerror = function (error) {
+            console.error('Error reading file:', error);
+        };
+
+        reader.readAsDataURL(picture);
     }
 
-    static query_details(thumbnail_url,setSelectorTags,setSelectorPics) {
+    static query_details(thumbnail_url, setSelectorTags, setSelectorPics) {
         console.log(thumbnail_url)
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details"
         axios({
             method: "post",
             url: API_ENDPOINT,
             data: {
-                thumbnail_url:thumbnail_url
+                thumbnail_url: thumbnail_url
             },
 
 

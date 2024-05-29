@@ -179,8 +179,15 @@ function App() {
       setSelectorTags([...selectorTags])
     }
   }
-  const handleSearchByPics = () => {
-
+  const handleSearchByPics = (event) => {
+    console.log(event.target.files[0])
+    const file = event.target.files[0]
+    if (file.type !== "image/jpeg") {
+      console.log("error input")
+      return
+    }
+    setItems([])
+    PictureManiputingUtil.picForPics(file,setUploadProgress, setItems)
 
   }
 
@@ -203,7 +210,7 @@ function App() {
   const handleOnFileChange = (event) => {
     console.log(event.target.files[0])
     const file = event.target.files[0]
-    if (file.type !== "image/jpeg") {
+    if (!file || file.type !== "image/jpeg") {
       console.log("error input")
       return
     }
@@ -283,7 +290,7 @@ function App() {
           startIcon={<CloudUploadIcon />}
         >
           search by image
-          <VisuallyHiddenInput type="file" onChange={handleOnFileChange} />
+          <VisuallyHiddenInput type="file" onChange={handleSearchByPics} />
         </Button>
       </Stack>
       <Stack direction="row" spacing={3}>
