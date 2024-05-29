@@ -27,6 +27,7 @@ import AuthUtil from './axios_util/AuthUtil';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import PictureManiputingUtil from './axios_util/PictureManipulatingUtil';
+import { eventWrapper } from '@testing-library/user-event/dist/utils';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -40,6 +41,22 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
+function Item(props) {
+  return (
+    <Box
+      component="img"
+      sx={{
+        height: "auto",
+        width: "100%",
+        loading: "lazy"
+      }}
+      alt={props.item.original}
+      src={props.item.original}
+
+    />
+  )
+}
+
 function App() {
   const [relationship, setRelationship] = React.useState('');
   const [open, setOpen] = React.useState(false);
@@ -48,48 +65,24 @@ function App() {
 
   const [loggedIn, setIsLoggedIn] = React.useState(false)
   const [isLogging, setIsLogging] = React.useState(true)
-  const [tags, setTags] = React.useState(["aa", "bb", "cc"])
+  const [tags, setTags] = React.useState([])
   const [tag, setTag] = React.useState("")
   const [selector, setSelector] = React.useState(0)
   const [editsInput, setEditsInput] = React.useState("")
   const [uploadProgress, setUploadProgress] = React.useState(0)
   const [items, setItems] = React.useState([
-    {
-      img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-      id: "11111",
-      tags: ["111", "222"],
-      featured: true,
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-      id: "222222",
-      tags: ["333", "444"]
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-      id: "3333",
-      tags: ["555", "666"]
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-      id: "4444",
-      tags: ["777", "888"]
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-      id: "5555",
-      tags: ["999", "101010"],
-      cols: 2,
-    },
-    {
-      img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-      id: "6666",
-      tags: ["11", "12"],
-      featured: true,
-    },
-
   ])
   const [selectorTags, setSelectorTags] = React.useState([])
+  const [selectorPics, setSelectorPics] = React.useState("")
+  const [subscribeTags, setSubscribeTags] = React.useState([])
+
+
+  const [subscribeText, setSubscribeText] = React.useState("")
+
+
+  const [subscribeOpen, setSubscribeOpen] = React.useState(false)
+
+  const [url, setURL] = React.useState("")
 
   React.useEffect(() => {
     console.log("he;lo")
@@ -103,11 +96,12 @@ function App() {
 
 
   const onModify = () => {
-    PictureManiputingUtil.setPictureTags(items[selector].id, selectorTags,"modify")
+    PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify")
   }
 
-  const handleDeleteItem = ()=> {
-    PictureManiputingUtil.setPictureTags(items[selector].id, selectorTags, "delete")
+  const handleDeleteItem = () => {
+    PictureManiputingUtil.setPictureTags(selector, selectorTags, "delete")
+    setOpen(false)
 
   }
   const onEditsAdd = () => {
@@ -122,7 +116,7 @@ function App() {
   }
 
   const handleSearch = () => {
-    PictureManiputingUtil.getPicturesByTags(tags, relationship)
+    PictureManiputingUtil.getPicturesByTags(tags, relationship,setItems)
   }
 
   const handleAddTags = () => {
@@ -137,12 +131,12 @@ function App() {
     setTag(event.target.value)
   }
 
-  const handleClickOpen = (idx) => {
+  const handleClickOpen = (url) => {
     return () => {
-      setSelector(idx)
-      console.log(idx)
-      setSelectorTags(items[idx].tags)
-      console.log(selectorTags)
+      setSelectorTags([])
+      setSelectorPics("")
+      setSelector(url)
+      PictureManiputingUtil.query_details(url,setSelectorTags, setSelectorPics)
       setOpen(true);
     }
   };
@@ -151,6 +145,17 @@ function App() {
     setEditsInput("")
     setOpen(false);
   };
+  const handleSubcribeClose = () => {
+
+    setSubscribeOpen(false)
+
+  }
+
+  const handleSubscribe = () => {
+
+    PictureManiputingUtil.subscribe(subscribeTags)
+    setSubscribeTags([])
+  }
 
   const handleRelationshipChange = (event) => {
     setRelationship(event.target.value);
@@ -165,26 +170,58 @@ function App() {
     }
   };
 
-
+  const handleSubscribeOpen = () => {
+    setSubscribeOpen(true)
+  }
   const handleModifyDelete = (idx) => {
     return () => {
       selectorTags.splice(idx, 1)
       setSelectorTags([...selectorTags])
     }
+  }
+  const handleSearchByPics = () => {
 
 
   }
 
 
+  const handleSubscribeDelete = (idx) => {
+    return () => {
+      subscribeTags.splice(idx, 1)
+      setSubscribeTags([...subscribeTags])
+    }
+  }
+
+  const handleSubscribeAdd = (event) => {
+    subscribeTags.push(subscribeText)
+    setSubscribeText("")
+    setSubscribeTags([...subscribeTags])
+    console.log(subscribeTags)
+  }
+
+
   const handleOnFileChange = (event) => {
     console.log(event.target.files[0])
-
     const file = event.target.files[0]
     if (file.type !== "image/jpeg") {
       console.log("error input")
       return
     }
     PictureManiputingUtil.uploadPic(event.target.files[0], setUploadProgress)
+  }
+  const onSubscribeTextChange = (event) => {
+    setSubscribeText(event.target.value)
+  }
+  const handleURLChange = (event) => {
+    setURL(event.target.value)
+  }
+
+  const searchByURL = (event) => {
+    setSelectorTags([])
+    setSelectorPics("")
+    setSelector(url)
+    PictureManiputingUtil.query_details(url, setSelectorTags, setSelectorPics)
+    setOpen(true)
   }
 
 
@@ -210,6 +247,7 @@ function App() {
       <Stack direction="row" spacing={3}>
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
+        <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
       </Stack>
 
       <Stack direction="row" spacing={3}>
@@ -237,15 +275,30 @@ function App() {
           Upload file
           <VisuallyHiddenInput type="file" onChange={handleOnFileChange} />
         </Button>
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+        >
+          search by image
+          <VisuallyHiddenInput type="file" onChange={handleOnFileChange} />
+        </Button>
+      </Stack>
+      <Stack direction="row" spacing={3}>
+        <TextField id="outlined-basic" label="Search By URL" variant="outlined" value={url} onChange={handleURLChange} />
+        <Button variant="outlined" onClick={searchByURL}>search by url</Button>
+
       </Stack>
 
       <ImageList sx={{ width: "80%", marginLeft: "10%" }}>
         {items.map((item, idx) => (
           <ImageListItem key={item.img}>
             <img
-              srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-              src={`${item.img}?w=248&fit=crop&auto=format`}
-              alt={item.title}
+              // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+              src={item}
+              //alt={item.title}
               loading="lazy"
             />
             <ImageListItemBar
@@ -253,7 +306,7 @@ function App() {
               subtitle={item.author}
               actionIcon={
                 <IconButton
-                  onClick={handleClickOpen(idx)}
+                  onClick={handleClickOpen(item)}
                   sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
                   aria-label={`info about ${item.title}`}
                 >
@@ -269,7 +322,6 @@ function App() {
         <Dialog
           open={open}
           onClose={handleClose}
-
           PaperProps={{
             component: 'form',
             onSubmit: (event) => {
@@ -280,20 +332,40 @@ function App() {
               console.log(email);
               handleClose();
             },
+            sx: {
+              width: "50%",
+              maxHeight: 300
+            }
           }}
         >
+
+
           <DialogTitle>Edit</DialogTitle>
-          <DialogContent >
-            <Stack direction="row" spacing={1} >
-              {
-                selectorTags.map((item, idx) => {
-                  return <Chip label={item} variant="outlined" onDelete={handleModifyDelete(idx)} />
-                })
-              }
+          <Stack direction="row">
+            <Stack sx={{ width: "40%" }}>
+              <Box>
+                <Item item={{ original: selectorPics }}></Item>
+              </Box>
             </Stack>
-            <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onEditChange} value={editsInput} />
-            <Button variant="outlined" onClick={onEditsAdd}>Add</Button>
-          </DialogContent>
+            <Stack sx={{ width: "60%" }}>
+              <Stack direction="row" spacing={1} >
+                {
+                  selectorTags.map((item, idx) => {
+                    return <Chip label={item} variant="outlined" onDelete={handleModifyDelete(idx)} />
+                  })
+                }
+              </Stack>
+              <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onEditChange} value={editsInput} />
+              <Button variant="outlined" onClick={onEditsAdd}>Add</Button>
+
+
+
+            </Stack>
+
+
+          </Stack>
+
+
           <DialogActions>
             <Button variant="outlined" onClick={handleDeleteItem}>Delete</Button>
             <Button onClick={handleClose}>Cancel</Button>
@@ -302,6 +374,52 @@ function App() {
         </Dialog>
       </React.Fragment>
 
+
+
+      <React.Fragment >
+
+        <Dialog
+          open={subscribeOpen}
+          onClose={handleSubcribeClose}
+          PaperProps={{
+            component: 'form',
+            onSubmit: (event) => {
+              event.preventDefault();
+              // const formData = new FormData(event.currentTarget);
+              // const formJson = Object.fromEntries(formData.entries());
+              // const email = formJson.email;
+              // console.log(email);
+              handleSubcribeClose();
+            },
+            sx: {
+              width: "50%",
+              maxHeight: 300
+            }
+          }}
+        >
+
+
+          <DialogTitle>Subscribe</DialogTitle>
+          <Stack direction="row">
+            <Stack sx={{ width: "60%" }}>
+              <Stack direction="row" spacing={1} >
+                {
+                  subscribeTags.map((item, idx) => {
+                    return <Chip label={item} variant="outlined" onDelete={handleSubscribeDelete(idx)} />
+                  })
+                }
+              </Stack>
+              <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onSubscribeTextChange} value={subscribeText} />
+              <Button variant="outlined" onClick={handleSubscribeAdd}>Add</Button>
+            </Stack>
+          </Stack>
+          <DialogActions>
+            <Button variant="outlined" onClick={handleSubscribeDelete}>Delete</Button>
+            <Button onClick={handleSubcribeClose}>Cancel</Button>
+            <Button type="submit" onClick={handleSubscribe}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment>
     </Stack>
   );
 }

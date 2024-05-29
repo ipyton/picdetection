@@ -1,8 +1,9 @@
 import axios from "axios"
+import Qs from "qs"
 export default class PictureManiputingUtil {
 
 
-    static getPicturesByTags(tags, relationship) {
+    static getPicturesByTags(tags, relationship,setItems) {
         if (!tags || tags.length === 0 || relationship === null) {
             console.log("tags can not be null")
             return
@@ -25,6 +26,7 @@ export default class PictureManiputingUtil {
             console.log(error)
         }).then(response => {
             console.log(response)
+            setItems(response.data.body)
         })
 
     }
@@ -44,10 +46,6 @@ export default class PictureManiputingUtil {
                 operation: operation,
                 tags: tags
             },
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                'Authorization': localStorage.getItem("token")
-            }
 
         }).catch(error => {
 
@@ -58,7 +56,79 @@ export default class PictureManiputingUtil {
 
     }
 
+    // static uploadPic(pic, setUploadProgress) {
+    //     console.log(pic)
+    //     if (!pic || !setUploadProgress) {
+    //         console.log("invalid input")
+    //         return
+    //     }
+    //     // const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/upload"
+
+    //     // const reader = new FileReader();
+
+    //     // reader.onload = function (e) {
+    //     //     const base64String = e.target.result;
+
+    //     //     axios({
+    //     //         method: "post",
+    //     //         data: {
+    //     //             image: base64String
+    //     //         },
+    //     //         url: API_ENDPOINT,
+    //     //         headers: {
+    //     //             // "Content-Type": "application/x-www-form-urlencoded",
+    //     //             'Authorization': localStorage.getItem("token")
+    //     //         }
+
+    //     //     }).catch(error => {
+    //     //         console.log(error)
+    //     //     }).then(response => {
+    //     //         console.log(response)
+
+    //     //     })
+    //     // };
+
+    //     // reader.onerror = function (error) {
+    //     //     console.error('Error reading file:', error);
+    //     // };
+
+    //     // reader.readAsDataURL(pic);
+
+    //     axios({
+    //         method: "post",
+    //         url: API_ENDPOINT,
+    //         headers: {
+    //             "Content-Type": "application/x-www-form-urlencoded",
+    //             'Authorization': localStorage.getItem("token")
+    //         }
+
+    //     }).catch(error => {
+    //         console.log(error)
+    //     }).then(response => {
+    //         console.log(JSON.parse(response.data.body).presignedUrl)
+    //         axios.put(JSON.parse(response.data.body).presignedUrl, pic, {
+    //             headers: {
+    //                 "Content-Type": "image/jpeg",
+    //             },
+    //             onUploadProgress: (progressEvent) => {
+    //                 const percentCompleted = Math.round(
+    //                     (progressEvent.loaded * 100) / progressEvent.total
+    //                 );
+    //                 setUploadProgress(percentCompleted);
+    //                 console.log(`Upload Progress: ${percentCompleted}%`);
+    //             },
+    //         }).catch(error => {
+    //             console.log(error)
+    //         })
+
+    //     })
+    // }
+
+
     static uploadPic(pic, setUploadProgress) {
+        if (!pic) {
+            return
+        }
         console.log(pic)
         if (!pic || !setUploadProgress) {
             console.log("invalid input")
@@ -77,7 +147,12 @@ export default class PictureManiputingUtil {
 
         }).catch(error => {
             console.log(error)
+            return
         }).then(response => {
+            if (!response || !response.data || !response.data.body) {
+                console.log("erro")
+                return
+            }
             console.log(JSON.parse(response.data.body).presignedUrl)
             axios.put(JSON.parse(response.data.body).presignedUrl, pic, {
                 headers: {
@@ -94,6 +169,67 @@ export default class PictureManiputingUtil {
                 console.log(error)
             })
 
+        })
+
+    }
+
+    static picForPics(picture, setUploadProgress) {
+        if (!picture) {
+            return
+        }
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/picForPics"
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': localStorage.getItem("token")
+            }
+
+        }).catch(error => {
+            console.log(error)
+        }).then(response => {
+            console.log(JSON.parse(response.data.body).presignedUrl)
+            axios.put(JSON.parse(response.data.body).presignedUrl, picture, {
+                headers: {
+                    "Content-Type": "image/jpeg",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setUploadProgress(percentCompleted);
+                    console.log(`Upload Progress: ${percentCompleted}%`);
+                },
+            }).catch(error => {
+                console.log(error)
+            })
+
+        })
+    }
+
+    static query_details(thumbnail_url,setSelectorTags,setSelectorPics) {
+        console.log(thumbnail_url)
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details"
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data: {
+                thumbnail_url:thumbnail_url
+            },
+
+
+        }).catch(error => {
+            console.log(error)
+        }).then(response => {
+            const body = JSON.parse(response.data.body)
+            if (body.length != 1) {
+                return
+            }
+            else {
+                setSelectorTags(body[0].tags)
+                setSelectorPics(body[0].rawURL)
+            }
         })
 
     }
