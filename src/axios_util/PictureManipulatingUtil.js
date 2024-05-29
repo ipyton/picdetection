@@ -174,7 +174,7 @@ export default class PictureManiputingUtil {
 
     }
 
-    static picForPics(picture, setUploadProgress,setItems) {
+    static picForPics(picture, setUploadProgress, setItems) {
         if (!picture) {
             return
         }
@@ -230,7 +230,51 @@ export default class PictureManiputingUtil {
                 setSelectorPics(body[0].rawURL)
             }
         })
+    }
 
+    //query tags for user subscription
+    static query_tags(email, setTags) {
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/subscribe"
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data: {
+                email: "example",
+                operation: "get"
+            },
+        }).catch(error => {
+            console.log(error)
+        }).then(response => {
+            console.log(response)
+            if (response) {
+                setTags(JSON.parse(response.data.body))
+            }
+        })
+    }
+
+
+    //update tags for user subscription
+    static update_tags(email, tags) {
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/subscribe"
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data: {
+                email: "example",
+                operation: "update",
+                tags: tags
+            },
+        }).catch(error => {
+            console.log(error)
+        }).then(response => {
+            console.log(response)
+            const body = JSON.parse(response.data.body)
+            if (body.length != 1) {
+                return
+            }
+            else {
+            }
+        })
     }
 
 

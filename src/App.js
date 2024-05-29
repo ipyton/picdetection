@@ -152,9 +152,9 @@ function App() {
   }
 
   const handleSubscribe = () => {
-
-    PictureManiputingUtil.subscribe(subscribeTags)
+    PictureManiputingUtil.update_tags("example", subscribeTags)
     setSubscribeTags([])
+
   }
 
   const handleRelationshipChange = (event) => {
@@ -171,6 +171,7 @@ function App() {
   };
 
   const handleSubscribeOpen = () => {
+    PictureManiputingUtil.query_tags("example", setSubscribeTags)
     setSubscribeOpen(true)
   }
   const handleModifyDelete = (idx) => {
