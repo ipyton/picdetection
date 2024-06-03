@@ -15,6 +15,9 @@ export default class PictureManiputingUtil {
         axios({
             method: "post",
             url: API_ENDPOINT,
+            headers:{
+                email: localStorage.getItem("email"),
+            },
             data: {
                 relationship: relationship,
                 tags: tags
@@ -46,7 +49,8 @@ export default class PictureManiputingUtil {
             data: {
                 id: pictureId,
                 operation: operation,
-                tags: tags
+                tags: tags,
+                email: localStorage.getItem("email"),
             }, headers: {
                 'Authorization': localStorage.getItem("id_token")
             }
@@ -144,6 +148,7 @@ export default class PictureManiputingUtil {
         axios({
             method: "post",
             url: API_ENDPOINT,
+            data: { email: localStorage.getItem("email"), },
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 'Authorization': localStorage.getItem("id_token")
@@ -190,7 +195,7 @@ export default class PictureManiputingUtil {
             axios({
                 method: "post",
                 url: API_ENDPOINT,
-                data: { pic: base64String },
+                data: {  email: localStorage.getItem("email"), pic: base64String },
                 headers: {
                     'Authorization': localStorage.getItem("id_token")
                 }
@@ -219,6 +224,7 @@ export default class PictureManiputingUtil {
             method: "post",
             url: API_ENDPOINT,
             data: {
+                email: localStorage.getItem("email"),
                 thumbnail_url: thumbnail_url
             },
             headers: {
@@ -247,7 +253,7 @@ export default class PictureManiputingUtil {
             method: "post",
             url: API_ENDPOINT,
             data: {
-                email: "example",
+                email: localStorage.getItem("email"),
                 operation: "get"
             },
             headers: {
@@ -271,7 +277,7 @@ export default class PictureManiputingUtil {
             method: "post",
             url: API_ENDPOINT,
             data: {
-                email: "example",
+                email: localStorage.getItem("email"),
                 operation: "update",
                 tags: tags
             },

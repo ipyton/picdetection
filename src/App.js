@@ -252,8 +252,8 @@ function App() {
     return <div>is logining</div>
   }
   if (!loggedIn) {
-    return <div>login failed, Click here to login!<Button variant="outlined" onClick={handleLogout}>Go to login page</Button>
-</div>
+    return <div>Have not login yet. Click here to login!<Button variant="outlined" onClick={handleLogout}>Go to login page</Button>
+    </div>
   }
 
 
