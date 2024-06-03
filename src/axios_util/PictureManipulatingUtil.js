@@ -35,7 +35,7 @@ export default class PictureManiputingUtil {
     }
 
 
-    static setPictureTags(pictureId, tags, operation) {
+    static setPictureTags(pictureId, tags, operation,plus) {
         if (!tags || !pictureId) {
             console.log("tags/pictures can not be null")
             return
@@ -48,6 +48,7 @@ export default class PictureManiputingUtil {
                 id: pictureId,
                 operation: operation,
                 tags: tags,
+                plus: plus,
                 email: localStorage.getItem("email"),
             }, headers: {
                 'Authorization': localStorage.getItem("id_token")
@@ -163,6 +164,7 @@ export default class PictureManiputingUtil {
             axios.put(JSON.parse(response.data.body).presignedUrl, pic, {
                 headers: {
                     "Content-Type": "image/jpeg",
+                    "x-amz-meta-email": localStorage.getItem("email")
                 },
                 onUploadProgress: (progressEvent) => {
                     const percentCompleted = Math.round(
@@ -267,7 +269,7 @@ export default class PictureManiputingUtil {
 
 
     //update tags for user subscription
-    static update_tags(email, tags) {
+    static update_tags(tags) {
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/subscribe"
         axios({
             method: "post",

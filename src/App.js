@@ -41,6 +41,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
+
 function Item(props) {
   return (
     <Box
@@ -55,6 +56,14 @@ function Item(props) {
 
     />
   )
+}
+
+function removeElement(array, element) {
+  const index = array.indexOf(element);
+  if (index !== -1) {
+    array.splice(index, 1);
+  }
+  return array;
 }
 
 function App() {
@@ -83,6 +92,7 @@ function App() {
   const [subscribeOpen, setSubscribeOpen] = React.useState(false)
 
   const [url, setURL] = React.useState("")
+  const plus =[]
 
   React.useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -108,7 +118,7 @@ function App() {
 
 
   const onModify = () => {
-    PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify")
+    PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify",plus)
   }
 
   const handleDeleteItem = () => {
@@ -117,8 +127,9 @@ function App() {
 
   }
   const onEditsAdd = () => {
-    if (editsInput && editsInput.length !== 0) {
+    if (editsInput && editsInput.length !== 0 && selectorTags.indexOf(editsInput) === -1) {
       setSelectorTags([...selectorTags, editsInput])
+      plus.push(editsInput)
       setEditsInput("")
 
     }
@@ -132,7 +143,7 @@ function App() {
   }
 
   const handleAddTags = () => {
-    if (tag && tag.length !== 0) {
+    if (tag && tag.length !== 0 && tags.indexOf(tag)===-1) {
       setTags([...tags, tag])
       setTag("")
     }
@@ -164,7 +175,7 @@ function App() {
   }
 
   const handleSubscribe = () => {
-    PictureManiputingUtil.update_tags("example", subscribeTags)
+    PictureManiputingUtil.update_tags( subscribeTags)
     setSubscribeTags([])
 
   }
@@ -176,8 +187,8 @@ function App() {
   const handleDelete = (idx) => {
     return () => {
       console.info('You clicked the delete icon.');
+      removeElement(plus, tags[idx])
       tags.splice(idx, 1)
-      console.log(tags)
       setTags([...tags])
     }
   };
@@ -213,10 +224,14 @@ function App() {
   }
 
   const handleSubscribeAdd = (event) => {
-    subscribeTags.push(subscribeText)
-    setSubscribeText("")
-    setSubscribeTags([...subscribeTags])
-    console.log(subscribeTags)
+    if (subscribeText && subscribeText.length !== 0 && subscribeTags.indexOf(subscribeText) === -1) {
+      subscribeTags.push(subscribeText)
+      setSubscribeText("")
+      setSubscribeTags([...subscribeTags])
+      console.log(subscribeTags)
+
+    }
+
   }
 
 
