@@ -15,12 +15,10 @@ export default class PictureManiputingUtil {
         axios({
             method: "post",
             url: API_ENDPOINT,
-            headers:{
-                email: localStorage.getItem("email"),
-            },
             data: {
                 relationship: relationship,
-                tags: tags
+                tags: tags,
+                email: localStorage.getItem("email"),
             },
             headers: {
                 'Authorization': localStorage.getItem("id_token")
@@ -150,7 +148,6 @@ export default class PictureManiputingUtil {
             url: API_ENDPOINT,
             data: { email: localStorage.getItem("email"), },
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
                 'Authorization': localStorage.getItem("id_token")
             }
 
@@ -191,7 +188,6 @@ export default class PictureManiputingUtil {
         const reader = new FileReader();
         reader.onloadend = function () {
             const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-            console.log("-=-=-=-=-=-=")
             axios({
                 method: "post",
                 url: API_ENDPOINT,
