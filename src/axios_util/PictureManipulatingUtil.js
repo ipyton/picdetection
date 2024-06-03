@@ -222,7 +222,7 @@ export default class PictureManiputingUtil {
             console.log(error)
         }).then(response => {
             const body = JSON.parse(response.data.body)
-            if (body.length != 1) {
+            if (body.length !== 1) {
                 return
             }
             else {
@@ -269,7 +269,7 @@ export default class PictureManiputingUtil {
         }).then(response => {
             console.log(response)
             const body = JSON.parse(response.data.body)
-            if (body.length != 1) {
+            if (body.length !== 1) {
                 return
             }
             else {

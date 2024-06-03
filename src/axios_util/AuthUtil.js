@@ -48,12 +48,17 @@ export default class AuthUtil {
         const response = await axios.get(jwksToken)
         return response.data.keys
     }
+    
+    static  getKey(jwks, kid) {
+        return jwks.find(key => key.kid === kid);
+    }
+
 
     //https://cognito-idp.us-east-1.amazonaws.com/us-east-1_SlFNWqmcG/.well-known/jwks.json 
     static async  authByIdToken(idToken,setIsLoggedIn, setIsLogging) {
         const jwks = await AuthUtil.getJWKs() 
         const decodedHeader = jose.decodeProtectedHeader(idToken);
-        const key = getKey(jwks, decodedHeader.kid);
+        const key = AuthUtil.getKey(jwks, decodedHeader.kid);
         const region = 'us-east-1'; // Replace with your AWS region
         const userPoolId = 'us-east-1_SlFNWqmcG'; // Replace with your Cognito User Pool ID
         const clientId = 'nph8bkpt4co0j5bpur1lplc3n'; // Replace with your Cognito App Client ID
@@ -68,7 +73,7 @@ export default class AuthUtil {
             audience: clientId
         });
         console.log(payload)
-        
+
     }
 
 }
