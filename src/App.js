@@ -85,12 +85,17 @@ function App() {
   const [url, setURL] = React.useState("")
 
   React.useEffect(() => {
-    console.log("he;lo")
     const params = window.location.search.substring(1)
     const searchParams = new URLSearchParams(params)
-    AuthUtil.auth(searchParams.get("code"), setIdToken, setIsLoggedIn, setIsLogging)
+    if (searchParams.get("id_token") || localStorage.getItem("id_token")) {
+      console.log(searchParams.get("id_token"))
+      AuthUtil.authByIdToken(searchParams.get("id_token", setIsLoggedIn, setIsLogging))
+    } else if (searchParams.get("code")) {
+      AuthUtil.authByCode(searchParams.get("code"), setIdToken, setIsLoggedIn, setIsLogging)
+    }
     //console.log(searchParams.get("code"))
   }, [])
+
 
 
 
@@ -116,7 +121,7 @@ function App() {
   }
 
   const handleSearch = () => {
-    PictureManiputingUtil.getPicturesByTags(tags, relationship,setItems)
+    PictureManiputingUtil.getPicturesByTags(tags, relationship, setItems)
   }
 
   const handleAddTags = () => {
@@ -136,7 +141,7 @@ function App() {
       setSelectorTags([])
       setSelectorPics("")
       setSelector(url)
-      PictureManiputingUtil.query_details(url,setSelectorTags, setSelectorPics)
+      PictureManiputingUtil.query_details(url, setSelectorTags, setSelectorPics)
       setOpen(true);
     }
   };
@@ -188,7 +193,7 @@ function App() {
       return
     }
     setItems([])
-    PictureManiputingUtil.picForPics(file,setUploadProgress, setItems)
+    PictureManiputingUtil.picForPics(file, setUploadProgress, setItems)
 
   }
 
@@ -223,7 +228,9 @@ function App() {
   const handleURLChange = (event) => {
     setURL(event.target.value)
   }
-
+  const handleLogout = () => {
+    
+  }
   const searchByURL = (event) => {
     setSelectorTags([])
     setSelectorPics("")
@@ -233,12 +240,12 @@ function App() {
   }
 
 
-  // if (isLogging) {
-  //   return <div>is login</div>
-  // }
-  // if (!loggedIn) {
-  //   return <div>login failed</div>
-  // }
+  if (isLogging) {
+    return <div>is logining</div>
+  }
+  if (!loggedIn) {
+    return <div>login failed</div>
+  }
 
 
   return (
@@ -256,6 +263,7 @@ function App() {
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
         <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
+        <Button variant="outlined" onClick={handleSubscribeOpen}>logout</Button>
       </Stack>
 
       <Stack direction="row" spacing={3}>
@@ -381,11 +389,7 @@ function App() {
           </DialogActions>
         </Dialog>
       </React.Fragment>
-
-
-
       <React.Fragment >
-
         <Dialog
           open={subscribeOpen}
           onClose={handleSubcribeClose}
@@ -405,8 +409,6 @@ function App() {
             }
           }}
         >
-
-
           <DialogTitle>Subscribe</DialogTitle>
           <Stack direction="row">
             <Stack sx={{ width: "60%" }}>
