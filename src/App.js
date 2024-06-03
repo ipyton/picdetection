@@ -92,7 +92,7 @@ function App() {
   const [subscribeOpen, setSubscribeOpen] = React.useState(false)
 
   const [url, setURL] = React.useState("")
-  const plus =[]
+  const [plus,setPlus] = React.useState([])
 
   React.useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -129,7 +129,7 @@ function App() {
   const onEditsAdd = () => {
     if (editsInput && editsInput.length !== 0 && selectorTags.indexOf(editsInput) === -1) {
       setSelectorTags([...selectorTags, editsInput])
-      plus.push(editsInput)
+      setPlus([...plus, editsInput])
       setEditsInput("")
 
     }
@@ -188,6 +188,7 @@ function App() {
     return () => {
       console.info('You clicked the delete icon.');
       removeElement(plus, tags[idx])
+      setPlus([...plus])
       tags.splice(idx, 1)
       setTags([...tags])
     }
