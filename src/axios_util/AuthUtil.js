@@ -48,20 +48,18 @@ export default class AuthUtil {
         const response = await axios.get(jwksToken)
         return response.data.keys
     }
-    
-    static  getKey(jwks, kid) {
+
+    static getKey(jwks, kid) {
         return jwks.find(key => key.kid === kid);
     }
-
-
-    //https://cognito-idp.us-east-1.amazonaws.com/us-east-1_SlFNWqmcG/.well-known/jwks.json 
-    static async  authByIdToken(idToken,setIsLoggedIn, setIsLogging) {
-        const jwks = await AuthUtil.getJWKs() 
+    static async verifyToken(idToken,setIsLoggedIn,setIsLogging) {
+        const jwks = await AuthUtil.getJWKs();
         const decodedHeader = jose.decodeProtectedHeader(idToken);
         const key = AuthUtil.getKey(jwks, decodedHeader.kid);
         const region = 'us-east-1'; // Replace with your AWS region
         const userPoolId = 'us-east-1_SlFNWqmcG'; // Replace with your Cognito User Pool ID
         const clientId = 'nph8bkpt4co0j5bpur1lplc3n'; // Replace with your Cognito App Client ID
+
 
         if (!key) {
             throw new Error('Key not found');
@@ -72,7 +70,32 @@ export default class AuthUtil {
             issuer: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
             audience: clientId
         });
-        console.log(payload)
+        if (!payload.email_verified) {
+            setIsLoggedIn(false)
+            setIsLogging(false)
+        }
+        else {
+            localStorage.setItem("email", payload.email)
+            localStorage.setItem("id_token", idToken)
+            console.log("success")
+
+            setIsLoggedIn(true)
+            setIsLogging(false) 
+        }
+    }
+
+
+    //https://cognito-idp.us-east-1.amazonaws.com/us-east-1_SlFNWqmcG/.well-known/jwks.json 
+    static async authByIdToken(idToken, setIsLoggedIn, setIsLogging) {
+        console.log(setIsLoggedIn)
+        console.log(setIsLogging)
+        AuthUtil.verifyToken(idToken,setIsLoggedIn, setIsLogging).catch(error => {
+            console.error('Token verification failed:', error);
+            localStorage.removeItem("id_token")
+            setIsLoggedIn(false)
+            setIsLogging(false)
+
+        });
 
     }
 

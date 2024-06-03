@@ -85,13 +85,20 @@ function App() {
   const [url, setURL] = React.useState("")
 
   React.useEffect(() => {
-    const params = window.location.search.substring(1)
-    const searchParams = new URLSearchParams(params)
-    if (searchParams.get("id_token") || localStorage.getItem("id_token")) {
-      console.log(searchParams.get("id_token"))
-      AuthUtil.authByIdToken(searchParams.get("id_token", setIsLoggedIn, setIsLogging))
+    const hash = window.location.hash.substring(1);
+    const searchParams = new URLSearchParams(hash)
+    console.log(searchParams)
+    if (searchParams.get("id_token")) {
+      localStorage.setItem("id_token", searchParams.get("id_token"))
+      const { protocol, host, pathname } = window.location;
+      window.location.replace(`${protocol}//${host}${pathname}`);
+    } else if (localStorage.getItem("id_token")) {
+      AuthUtil.authByIdToken(localStorage.getItem("id_token"), setIsLoggedIn, setIsLogging)
     } else if (searchParams.get("code")) {
       AuthUtil.authByCode(searchParams.get("code"), setIdToken, setIsLoggedIn, setIsLogging)
+    } else {
+      setIsLoggedIn(false)
+      setIsLogging(false)
     }
     //console.log(searchParams.get("code"))
   }, [])
@@ -229,7 +236,9 @@ function App() {
     setURL(event.target.value)
   }
   const handleLogout = () => {
-    
+    localStorage.removeItem("id_token")
+    localStorage.removeItem("email")
+    window.location.replace("https://pic-detection.auth.us-east-1.amazoncognito.com/login?client_id=nph8bkpt4co0j5bpur1lplc3n&response_type=token&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fmain.d1naxchdsbctyj.amplifyapp.com%2F")
   }
   const searchByURL = (event) => {
     setSelectorTags([])
@@ -239,12 +248,12 @@ function App() {
     setOpen(true)
   }
 
-
   if (isLogging) {
     return <div>is logining</div>
   }
   if (!loggedIn) {
-    return <div>login failed</div>
+    return <div>login failed, Click here to login!<Button variant="outlined" onClick={handleLogout}>Go to login page</Button>
+</div>
   }
 
 
@@ -263,7 +272,7 @@ function App() {
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
         <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
-        <Button variant="outlined" onClick={handleSubscribeOpen}>logout</Button>
+        <Button variant="outlined" onClick={handleLogout}>logout</Button>
       </Stack>
 
       <Stack direction="row" spacing={3}>

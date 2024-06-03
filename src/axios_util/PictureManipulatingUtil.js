@@ -20,11 +20,12 @@ export default class PictureManiputingUtil {
                 tags: tags
             },
             headers: {
-                'Authorization': localStorage.getItem("token")
+                'Authorization': localStorage.getItem("id_token")
             }
 
         }).catch(error => {
             console.log(error)
+            return
         }).then(response => {
             console.log(response)
             setItems(response.data.body)
@@ -46,7 +47,9 @@ export default class PictureManiputingUtil {
                 id: pictureId,
                 operation: operation,
                 tags: tags
-            },
+            }, headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
 
         }).catch(error => {
 
@@ -143,7 +146,7 @@ export default class PictureManiputingUtil {
             url: API_ENDPOINT,
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                'Authorization': localStorage.getItem("token")
+                'Authorization': localStorage.getItem("id_token")
             }
 
         }).catch(error => {
@@ -187,8 +190,10 @@ export default class PictureManiputingUtil {
             axios({
                 method: "post",
                 url: API_ENDPOINT,
-                data: { pic: base64String }
-
+                data: { pic: base64String },
+                headers: {
+                    'Authorization': localStorage.getItem("id_token")
+                }
             }).catch(error => {
                 console.log(error)
             }).then(response => {
@@ -216,6 +221,9 @@ export default class PictureManiputingUtil {
             data: {
                 thumbnail_url: thumbnail_url
             },
+            headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
 
 
         }).catch(error => {
@@ -242,6 +250,9 @@ export default class PictureManiputingUtil {
                 email: "example",
                 operation: "get"
             },
+            headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
         }).catch(error => {
             console.log(error)
         }).then(response => {
@@ -264,6 +275,9 @@ export default class PictureManiputingUtil {
                 operation: "update",
                 tags: tags
             },
+            headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
         }).catch(error => {
             console.log(error)
         }).then(response => {
