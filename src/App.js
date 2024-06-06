@@ -1,33 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Stack } from '@mui/material';
-import { Button } from '@mui/material';
-import { List } from '@mui/material';
-import { TextField } from '@mui/material';
-import { Chip } from '@mui/material';
+import Select from '@mui/material/Select';
+import { Stack, Button, List, TextField, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress } from '@mui/material';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import ListSubheader from '@mui/material/ListSubheader';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { useParams } from 'react-router-dom';
-import AuthUtil from './axios_util/AuthUtil';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import PictureManiputingUtil from './axios_util/PictureManipulatingUtil';
-import { eventWrapper } from '@testing-library/user-event/dist/utils';
+import AuthUtil from './axios_util/AuthUtil';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -67,6 +54,7 @@ function removeElement(array, element) {
 }
 
 function App() {
+  const [openUploadDialog, setOpenUploadDialog] = useState(false);
   const [relationship, setRelationship] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [access_token, set_access_token] = React.useState("===")
@@ -257,7 +245,9 @@ function App() {
       console.log("error input")
       return
     }
-    PictureManiputingUtil.uploadPic(event.target.files[0], setUploadProgress)
+    setUploadProgress(0);
+    setOpenUploadDialog(true);
+    PictureManiputingUtil.uploadPic(file, setUploadProgress, () => setOpenUploadDialog(false));
   }
   const onSubscribeTextChange = (event) => {
     setSubscribeText(event.target.value)
@@ -322,16 +312,35 @@ function App() {
           </Select>
         </FormControl>
         <Button variant="outlined" onClick={handleSearch}>Search</Button>
+
+
         <Button
-          component="label"
-          role={undefined}
-          variant="contained"
-          tabIndex={-1}
-          startIcon={<CloudUploadIcon />}
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
         >
           Upload file
           <VisuallyHiddenInput type="file" onChange={handleOnFileChange} />
         </Button>
+
+        <Dialog open={openUploadDialog} onClose={() => setOpenUploadDialog(false)}>
+          <DialogTitle>Uploading Image</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please wait while your image is being uploaded.
+            </DialogContentText>
+            <LinearProgress variant="determinate" value={uploadProgress} />
+          </DialogContent>
+          {/*<DialogActions>*/}
+          {/*  <Button onClick={() => setOpenUploadDialog(false)} color="primary">*/}
+          {/*    Cancel*/}
+          {/*  </Button>*/}
+          {/*</DialogActions>*/}
+        </Dialog>
+
+
         <Button
           component="label"
           role={undefined}
