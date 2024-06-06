@@ -117,7 +117,7 @@ export default class PictureManiputingUtil {
 
     }
 
-    static picForPics(picture, setUploadProgress, setItems) {
+    static picForPics(picture, setUploadProgress, setItems, handleUploadComplete) {
         if (!picture) {
             return
         }
@@ -132,9 +132,21 @@ export default class PictureManiputingUtil {
                 data: {  email: localStorage.getItem("email"), pic: base64String },
                 headers: {
                     'Authorization': localStorage.getItem("id_token")
-                }
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setUploadProgress(percentCompleted);
+                    console.log(`Upload Progress: ${percentCompleted}%`);
+
+                    if (percentCompleted === 100) {
+                        handleUploadComplete();
+                    }
+                },
             }).catch(error => {
                 console.log(error)
+                handleUploadComplete(); // Ensure the dialog is closed on error
             }).then(response => {
                 if (!response || !response.data) {
                     return

@@ -214,7 +214,9 @@ function App() {
       return
     }
     setItems([])
-    PictureManiputingUtil.picForPics(file, setUploadProgress, setItems)
+    setUploadProgress(0);
+    setOpenUploadDialog(true);
+    PictureManiputingUtil.picForPics(file, setUploadProgress, setItems, () => setOpenUploadDialog(false));
 
   }
 
@@ -278,7 +280,10 @@ function App() {
 
 
   return (
-    <Stack sx={{ width: "80%", marginLeft: "10%" }} spacing={3}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'
+        , backgroundColor: '#f0f0f0'
+      }}>
+        <Stack sx={{ width: '80%' }} spacing={3}>
       {access_token}
       <Stack direction="row" >
         <Stack direction="row" spacing={1}>
@@ -351,6 +356,22 @@ function App() {
           search by image
           <VisuallyHiddenInput type="file" onChange={handleSearchByPics} />
         </Button>
+
+        <Dialog open={openUploadDialog} onClose={() => setOpenUploadDialog(false)}>
+          <DialogTitle>Uploading Image</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please wait while your image is being uploading.
+            </DialogContentText>
+            <LinearProgress variant="determinate" value={uploadProgress} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenUploadDialog(false)} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </Stack>
       <Stack direction="row" spacing={3}>
         <TextField id="outlined-basic" label="Search By URL" variant="outlined" value={url} onChange={handleURLChange} />
@@ -476,6 +497,7 @@ function App() {
         </Dialog>
       </React.Fragment>
     </Stack>
+  </Box>
   );
 }
 
