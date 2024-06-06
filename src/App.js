@@ -117,7 +117,7 @@ function App() {
 
 
   const changeRepetitions = (event) => {
-    const num = Number(str);
+    const num = Number(event.target.value);
 
     // 检查转换后的值是否为 NaN，并且大于零
     if (!isNaN(num) && num > 0) {
@@ -297,6 +297,7 @@ function App() {
       <Stack direction="row" spacing={3}>
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
         <TextField id="outlined-basic" label="Input repetition numbers" variant="outlined" value={repetitions} onChange={setRepetitions} />
+
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
         <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
         <Button variant="outlined" onClick={handleLogout}>logout</Button>
