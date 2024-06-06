@@ -124,6 +124,7 @@ function App() {
 
   const onModify = () => {
     PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify", plus)
+    setPlus([])
   }
 
   const handleDeleteItem = () => {
