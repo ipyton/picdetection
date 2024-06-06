@@ -117,12 +117,7 @@ function App() {
 
 
   const changeRepetitions = (event) => {
-    const num = Number(event.target.value);
-
-    // 检查转换后的值是否为 NaN，并且大于零
-    if (!isNaN(num) && num > 0) {
-      setTag(event.target.value)
-    }
+    setTag(event.target.value)
 
   }
 
@@ -153,6 +148,14 @@ function App() {
   }
 
   const handleAddTags = () => {
+    const num = Number(event.target.value);
+
+    // 检查转换后的值是否为 NaN，并且大于零
+    if (!isNaN(num) && num > 0) {
+      setRepetitions()
+      return
+    }
+
     if (tag && tag.length !== 0 && tags.indexOf(tag) === -1) {
       setTags([...tags, { tag: tag, repetitions: repetitions }])
       setTag("")
@@ -296,7 +299,7 @@ function App() {
 
       <Stack direction="row" spacing={3}>
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
-        <TextField id="outlined-basic" label="Input repetition numbers" variant="outlined" value={repetitions} onChange={setRepetitions} />
+        <TextField id="outlined-basic" label="Input repetition numbers" variant="outlined" value={repetitions} onChange={changeRepetitions} />
 
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
         <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
