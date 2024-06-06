@@ -347,7 +347,7 @@ function App() {
         <Button variant="outlined" onClick={searchByURL}>search by url</Button>
 
       </Stack>
-      {items.length == 0 ? "no contents" :
+      {items === null || items.length == 0 ? "no contents" :
         <ImageList sx={{ width: "80%", marginLeft: "10%" }}>
           {items.map((item, idx) => (
             <ImageListItem key={item.img}>
