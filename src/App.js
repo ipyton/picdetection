@@ -117,7 +117,7 @@ function App() {
 
 
   const changeRepetitions = (event) => {
-    setTag(event.target.value)
+    setRepetitions(event.target.value)
 
   }
 
