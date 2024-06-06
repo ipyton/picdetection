@@ -148,7 +148,7 @@ function App() {
   }
 
   const handleAddTags = () => {
-    const num = Number(event.target.value);
+    const num = Number(repetitions);
 
     // 检查转换后的值是否为 NaN，并且大于零
     if (!isNaN(num) && num > 0) {
