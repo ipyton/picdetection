@@ -132,7 +132,7 @@ function App() {
 
   }
   const onEditsAdd = () => {
-    if (editsInput && editsInput.length !== 0 && selectorTags.indexOf(editsInput) === -1) {
+    if (editsInput && editsInput.length !== 0) {
       setSelectorTags([...selectorTags, editsInput])
       setPlus([...plus, editsInput])
       setEditsInput("")
