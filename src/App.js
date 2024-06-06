@@ -120,7 +120,7 @@ function App() {
     const num = Number(str);
 
     // 检查转换后的值是否为 NaN，并且大于零
-    if (!isNaN(num) && num > 0){
+    if (!isNaN(num) && num > 0) {
       setTag(event.target.value)
     }
 
@@ -154,7 +154,7 @@ function App() {
 
   const handleAddTags = () => {
     if (tag && tag.length !== 0 && tags.indexOf(tag) === -1) {
-      setTags([...tags, {tags:tag, repetitions:repetitions}])
+      setTags([...tags, { tag: tag, repetitions: repetitions }])
       setTag("")
       setRepetitions(0)
     }
@@ -289,7 +289,7 @@ function App() {
       <Stack direction="row" >
         <Stack direction="row" spacing={1}>
           {tags.map((item, idx) => {
-            return <Chip label={item} onDelete={handleDelete(idx)} />
+            return <Chip label={item.tag + item.repetitions} onDelete={handleDelete(idx)} />
           })}
         </Stack>
       </Stack>
