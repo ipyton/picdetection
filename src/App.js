@@ -92,7 +92,7 @@ function App() {
   const [subscribeOpen, setSubscribeOpen] = React.useState(false)
 
   const [url, setURL] = React.useState("")
-  const [plus,setPlus] = React.useState([])
+  const [plus, setPlus] = React.useState([])
 
   React.useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -118,7 +118,7 @@ function App() {
 
 
   const onModify = () => {
-    PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify",plus)
+    PictureManiputingUtil.setPictureTags(selector, selectorTags, "modify", plus)
   }
 
   const handleDeleteItem = () => {
@@ -143,7 +143,7 @@ function App() {
   }
 
   const handleAddTags = () => {
-    if (tag && tag.length !== 0 && tags.indexOf(tag)===-1) {
+    if (tag && tag.length !== 0 && tags.indexOf(tag) === -1) {
       setTags([...tags, tag])
       setTag("")
     }
@@ -175,7 +175,7 @@ function App() {
   }
 
   const handleSubscribe = () => {
-    PictureManiputingUtil.update_tags( subscribeTags)
+    PictureManiputingUtil.update_tags(subscribeTags)
     setSubscribeTags([])
 
   }
@@ -332,32 +332,32 @@ function App() {
         <Button variant="outlined" onClick={searchByURL}>search by url</Button>
 
       </Stack>
-
-      <ImageList sx={{ width: "80%", marginLeft: "10%" }}>
-        {items.map((item, idx) => (
-          <ImageListItem key={item.img}>
-            <img
-              // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-              src={item}
-              //alt={item.title}
-              loading="lazy"
-            />
-            <ImageListItemBar
-              title={item.tags}
-              subtitle={item.author}
-              actionIcon={
-                <IconButton
-                  onClick={handleClickOpen(item)}
-                  sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                  aria-label={`info about ${item.title}`}
-                >
-                  <InfoIcon />
-                </IconButton>
-              }
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+      {items.length == 0 ? "no contents" :
+        <ImageList sx={{ width: "80%", marginLeft: "10%" }}>
+          {items.map((item, idx) => (
+            <ImageListItem key={item.img}>
+              <img
+                // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                src={item}
+                //alt={item.title}
+                loading="lazy"
+              />
+              <ImageListItemBar
+                title={item.tags}
+                subtitle={item.author}
+                actionIcon={
+                  <IconButton
+                    onClick={handleClickOpen(item)}
+                    sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                    aria-label={`info about ${item.title}`}
+                  >
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </ImageListItem>
+          ))}
+        </ImageList>}
       <React.Fragment >
 
         <Dialog
