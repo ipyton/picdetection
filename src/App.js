@@ -93,6 +93,8 @@ function App() {
 
   const [url, setURL] = React.useState("")
   const [plus, setPlus] = React.useState([])
+  const [repetitions, setRepetitions] = React.useState(0)
+
 
   React.useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -114,7 +116,15 @@ function App() {
   }, [])
 
 
+  const changeRepetitions = (event) => {
+    const num = Number(str);
 
+    // 检查转换后的值是否为 NaN，并且大于零
+    if (!isNaN(num) && num > 0){
+      setTag(event.target.value)
+    }
+
+  }
 
 
   const onModify = () => {
@@ -144,10 +154,10 @@ function App() {
 
   const handleAddTags = () => {
     if (tag && tag.length !== 0 && tags.indexOf(tag) === -1) {
-      setTags([...tags, tag])
+      setTags([...tags, {tags:tag, repetitions:repetitions}])
       setTag("")
+      setRepetitions(0)
     }
-
   }
 
   const handleInputChange = (event) => {
@@ -286,6 +296,7 @@ function App() {
 
       <Stack direction="row" spacing={3}>
         <TextField id="outlined-basic" label="Input a tag" variant="outlined" value={tag} onChange={handleInputChange} />
+        <TextField id="outlined-basic" label="Input repetition numbers" variant="outlined" value={repetitions} onChange={setRepetitions} />
         <Button variant="outlined" onClick={handleAddTags}>Add Tag</Button>
         <Button variant="outlined" onClick={handleSubscribeOpen}>subscribe</Button>
         <Button variant="outlined" onClick={handleLogout}>logout</Button>
@@ -398,12 +409,7 @@ function App() {
               </Stack>
               <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onEditChange} value={editsInput} />
               <Button variant="outlined" onClick={onEditsAdd}>Add</Button>
-
-
-
             </Stack>
-
-
           </Stack>
 
 
