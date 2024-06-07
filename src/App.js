@@ -161,7 +161,7 @@ function App() {
       setSelectorTags([])
       setSelectorPics("")
       setSelector(url)
-      PictureManiputingUtil.query_details(url, setSelectorTags, setSelectorPics)
+      PictureManiputingUtil.query_details_url(url, setSelectorTags, setSelectorPics)
       setOpen(true);
     }
   };

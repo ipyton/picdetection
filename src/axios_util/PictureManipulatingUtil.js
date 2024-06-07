@@ -158,30 +158,30 @@ export default class PictureManiputingUtil {
     }
 
     // Rewrite the query_details
-    // static query_details(thumbnail_url, setSelectorTags, setSelectorPics) {
-    //     const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details";
-    //     axios({
-    //         method: "post",
-    //         url: API_ENDPOINT,
-    //         data: {
-    //             email: localStorage.getItem("email"),
-    //             thumbnail_url: thumbnail_url
-    //         },
-    //         headers: {
-    //             'Authorization': localStorage.getItem("id_token")
-    //         }
-    //     }).then((response) => { // 改动点 11: 使用箭头函数替换普通函数，确保 `this` 绑定到类实例
-    //         const body = PictureManiputingUtil.parseJSON(response.data.body); // 改动点 12: 使用类名来调用静态方法，确保 `this` 正确
-    //         if (body && body.length === 1) {
-    //             setSelectorTags(body[0].tags);
-    //             setSelectorPics(body[0].rawURL);
-    //         }
-    //     }).catch(error => {
-    //         console.log(error);
-    //     });
-    // }
-
     static query_details(thumbnail_url, setSelectorTags, setSelectorPics) {
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details";
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data: {
+                email: localStorage.getItem("email"),
+                thumbnail_url: thumbnail_url
+            },
+            headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
+        }).then((response) => { // 改动点 11: 使用箭头函数替换普通函数，确保 `this` 绑定到类实例
+            const body = PictureManiputingUtil.parseJSON(response.data.body); // 改动点 12: 使用类名来调用静态方法，确保 `this` 正确
+            if (body && body.length === 1) {
+                setSelectorTags(body[0].tags);
+                setSelectorPics(body[0].rawURL);
+            }
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    static query_details_url(thumbnail_url, setSelectorTags, setSelectorPics) {
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details";
         axios({
             method: "post",
