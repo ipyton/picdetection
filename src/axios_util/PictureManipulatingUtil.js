@@ -157,6 +157,30 @@ export default class PictureManiputingUtil {
         reader.readAsDataURL(picture);
     }
 
+    // Rewrite the query_details
+    // static query_details(thumbnail_url, setSelectorTags, setSelectorPics) {
+    //     const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details";
+    //     axios({
+    //         method: "post",
+    //         url: API_ENDPOINT,
+    //         data: {
+    //             email: localStorage.getItem("email"),
+    //             thumbnail_url: thumbnail_url
+    //         },
+    //         headers: {
+    //             'Authorization': localStorage.getItem("id_token")
+    //         }
+    //     }).then((response) => { // 改动点 11: 使用箭头函数替换普通函数，确保 `this` 绑定到类实例
+    //         const body = PictureManiputingUtil.parseJSON(response.data.body); // 改动点 12: 使用类名来调用静态方法，确保 `this` 正确
+    //         if (body && body.length === 1) {
+    //             setSelectorTags(body[0].tags);
+    //             setSelectorPics(body[0].rawURL);
+    //         }
+    //     }).catch(error => {
+    //         console.log(error);
+    //     });
+    // }
+
     static query_details(thumbnail_url, setSelectorTags, setSelectorPics) {
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/query_details";
         axios({
@@ -169,16 +193,51 @@ export default class PictureManiputingUtil {
             headers: {
                 'Authorization': localStorage.getItem("id_token")
             }
-        }).then((response) => { // 改动点 11: 使用箭头函数替换普通函数，确保 `this` 绑定到类实例
-            const body = PictureManiputingUtil.parseJSON(response.data.body); // 改动点 12: 使用类名来调用静态方法，确保 `this` 正确
+        }).then((response) => {
+            const body = PictureManiputingUtil.parseJSON(response.data.body);
             if (body && body.length === 1) {
                 setSelectorTags(body[0].tags);
-                setSelectorPics(body[0].rawURL);
+
+                // 调用新的 API 获取图片的 base64 编码
+                PictureManiputingUtil.fetchImageBase64(body[0].rawURL, localStorage.getItem("email"), setSelectorPics);
             }
         }).catch(error => {
             console.log(error);
         });
     }
+
+// 添加新的方法 fetchImageBase64
+    static fetchImageBase64(rawURL, email, setSelectorPics) {
+        const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/get_image";
+        axios({
+            method: "post",
+            url: API_ENDPOINT,
+            data: {
+                email: email,
+                image_url: rawURL
+            },
+            headers: {
+                'Authorization': localStorage.getItem("id_token")
+            }
+        }).then((response) => {
+            // 检查响应状态码和是否包含Base64编码数据
+            if (response.status === 200 && response.data) {
+                // 获取Content-Type
+                const contentType = response.headers['content-type'];
+
+                // 构建 base64 图片数据 URL
+                const base64Image = `data:${contentType};base64,${response.data}`;
+
+                // 设置 base64 编码的图片数据
+                setSelectorPics(base64Image);
+            } else {
+                console.log("Failed to fetch image, invalid response.");
+            }
+        }).catch(error => {
+            console.log("Error fetching image:", error);
+        });
+    }
+
 
     static query_tags(email, setTags) {
         const API_ENDPOINT = "https://3pbgxw5wvc.execute-api.us-east-1.amazonaws.com/dev/subscribe";
