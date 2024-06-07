@@ -379,15 +379,18 @@ function App() {
 
       </Stack>
       {items === null || items.length == 0 ? "no contents" :
-        <ImageList sx={{ width: "80%", marginLeft: "10%" }}>
+        <ImageList sx={{ width: "100%", padding: "10px" }}
+          cols={15} // 设定显示的列数，比如这里设定为4列
+          gap={8} // 设置列之间的间距
+        >
           {items.map((item, idx) => (
-            <ImageListItem key={item.img}>
-              <img
-                // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                src={item}
-                //alt={item.title}
-                loading="lazy"
-              />
+              <ImageListItem key={idx}>
+                <img
+                    src={item}
+                    alt={`image-${idx}`}
+                    loading="lazy"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
               <ImageListItemBar
                 title={item.tags}
                 subtitle={item.author}
@@ -404,99 +407,223 @@ function App() {
             </ImageListItem>
           ))}
         </ImageList>}
-      <React.Fragment >
+      {/*<React.Fragment >*/}
 
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          PaperProps={{
-            component: 'form',
-            onSubmit: (event) => {
-              event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries(formData.entries());
-              const email = formJson.email;
-              console.log(email);
-              handleClose();
-            },
-            sx: {
-              width: "50%",
-              maxHeight: 300
-            }
-          }}
-        >
+      {/*  <Dialog*/}
+      {/*      open={open}*/}
+      {/*      onClose={handleClose}*/}
+      {/*      PaperProps={{*/}
+      {/*        component: 'form',*/}
+      {/*        onSubmit: (event) => {*/}
+      {/*          event.preventDefault();*/}
+      {/*          handleClose();*/}
+      {/*        },*/}
+      {/*        sx: {*/}
+      {/*          width: "70%", // 设置宽度为 70% 的屏幕宽度*/}
+      {/*          maxWidth: "800px", // 设置最大宽度为 800px*/}
+      {/*          height: "auto", // 设置高度为自动*/}
+      {/*          padding: 2, // 为 Dialog 增加填充*/}
+      {/*        }*/}
+      {/*      }}*/}
+      {/*  >*/}
 
 
-          <DialogTitle>Edit</DialogTitle>
-          <Stack direction="row">
-            <Stack sx={{ width: "40%" }}>
-              <Box>
-                <Item item={{ original: selectorPics }}></Item>
-              </Box>
-            </Stack>
-            <Stack sx={{ width: "60%" }}>
-              <Stack direction="row" spacing={1} >
-                {
-                  selectorTags.map((item, idx) => {
-                    return <Chip label={item} variant="outlined" onDelete={handleModifyDelete(idx)} />
-                  })
+      {/*    <DialogTitle>Edit</DialogTitle>*/}
+      {/*    <Stack direction="row">*/}
+      {/*      <Stack sx={{ width: "40%" }}>*/}
+      {/*        <Box>*/}
+      {/*          <Item item={{ original: selectorPics }}></Item>*/}
+      {/*        </Box>*/}
+      {/*      </Stack>*/}
+      {/*      <Stack sx={{ width: "60%" }}>*/}
+      {/*        <Stack direction="row" spacing={1} >*/}
+      {/*          {*/}
+      {/*            selectorTags.map((item, idx) => {*/}
+      {/*              return <Chip label={item} variant="outlined" onDelete={handleModifyDelete(idx)} />*/}
+      {/*            })*/}
+      {/*          }*/}
+      {/*        </Stack>*/}
+      {/*        <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onEditChange} value={editsInput} />*/}
+      {/*        <Button variant="outlined" onClick={onEditsAdd}>Add</Button>*/}
+      {/*      </Stack>*/}
+      {/*    </Stack>*/}
+
+
+      {/*    <DialogActions>*/}
+      {/*      <Button variant="outlined" onClick={handleDeleteItem}>Delete</Button>*/}
+      {/*      <Button onClick={handleClose}>Cancel</Button>*/}
+      {/*      <Button type="submit" onClick={onModify}>Confirm</Button>*/}
+      {/*    </DialogActions>*/}
+      {/*  </Dialog>*/}
+      {/*</React.Fragment>*/}
+
+        <React.Fragment>
+          <Dialog
+              open={open}
+              onClose={handleClose}
+              PaperProps={{
+                component: 'form',
+                onSubmit: (event) => {
+                  event.preventDefault();
+                  handleClose();
+                },
+                sx: {
+                  width: "80%", // 设置宽度为 80% 的屏幕宽度
+                  maxWidth: "1000px", // 设置最大宽度为 1000px
+                  padding: 3, // 为 Dialog 增加填充
                 }
+              }}
+          >
+            <DialogTitle>Edit</DialogTitle>
+            <Stack direction="row" spacing={2} sx={{ padding: 2 }}>
+              <Stack sx={{ width: "40%", paddingRight: 2 }}>
+                <Box sx={{ padding: 1 }}>
+                  {/* 调整图片显示 */}
+                  <img src={selectorPics} alt="Thumbnail" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} />
+                </Box>
               </Stack>
-              <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onEditChange} value={editsInput} />
-              <Button variant="outlined" onClick={onEditsAdd}>Add</Button>
+              <Stack sx={{ width: "60%" }}>
+                <Stack direction="row" spacing={1} sx={{ marginBottom: 2 }}>
+                  {selectorTags.map((item, idx) => (
+                      <Chip
+                          key={idx}
+                          label={item}
+                          variant="outlined"
+                          onDelete={handleModifyDelete(idx)}
+                          sx={{ margin: 0.5 }} // 为 Chip 设置间距
+                      />
+                  ))}
+                </Stack>
+                <TextField
+                    id="outlined-basic"
+                    label="Input a label"
+                    variant="outlined"
+                    onChange={onEditChange}
+                    value={editsInput}
+                    fullWidth // 使 TextField 充满宽度
+                    sx={{ marginBottom: 2 }} // 为 TextField 设置下方间距
+                />
+                <Button variant="outlined" onClick={onEditsAdd} fullWidth sx={{ padding: 1 }}>
+                  Add
+                </Button>
+              </Stack>
             </Stack>
-          </Stack>
+            <DialogActions>
+              <Button variant="outlined" onClick={handleDeleteItem} sx={{ marginRight: 1 }}>Delete</Button>
+              <Button onClick={handleClose} sx={{ marginRight: 1 }}>Cancel</Button>
+              <Button type="submit" onClick={onModify} variant="contained" color="primary">
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </React.Fragment>
 
 
-          <DialogActions>
-            <Button variant="outlined" onClick={handleDeleteItem}>Delete</Button>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit" onClick={onModify}>Confirm</Button>
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
-      <React.Fragment >
-        <Dialog
-          open={subscribeOpen}
-          onClose={handleSubcribeClose}
-          PaperProps={{
-            component: 'form',
-            onSubmit: (event) => {
-              event.preventDefault();
-              // const formData = new FormData(event.currentTarget);
-              // const formJson = Object.fromEntries(formData.entries());
-              // const email = formJson.email;
-              // console.log(email);
-              handleSubcribeClose();
-            },
-            sx: {
-              width: "50%",
-              maxHeight: 300
-            }
-          }}
-        >
-          <DialogTitle>Subscribe</DialogTitle>
-          <Stack direction="row">
-            <Stack sx={{ width: "60%" }}>
-              <Stack direction="row" spacing={1} >
-                {
-                  subscribeTags.map((item, idx) => {
-                    return <Chip label={item} variant="outlined" onDelete={handleSubscribeDelete(idx)} />
-                  })
-                }
+      {/*<React.Fragment >*/}
+      {/*  <Dialog*/}
+      {/*    open={subscribeOpen}*/}
+      {/*    onClose={handleSubcribeClose}*/}
+      {/*    PaperProps={{*/}
+      {/*      component: 'form',*/}
+      {/*      onSubmit: (event) => {*/}
+      {/*        event.preventDefault();*/}
+      {/*        // const formData = new FormData(event.currentTarget);*/}
+      {/*        // const formJson = Object.fromEntries(formData.entries());*/}
+      {/*        // const email = formJson.email;*/}
+      {/*        // console.log(email);*/}
+      {/*        handleSubcribeClose();*/}
+      {/*      },*/}
+      {/*      sx: {*/}
+      {/*        width: "50%",*/}
+      {/*        maxHeight: 300*/}
+      {/*      }*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <DialogTitle>Subscribe</DialogTitle>*/}
+      {/*    <Stack direction="row">*/}
+      {/*      <Stack sx={{ width: "60%" }}>*/}
+      {/*        <Stack direction="row" spacing={1} >*/}
+      {/*          {*/}
+      {/*            subscribeTags.map((item, idx) => {*/}
+      {/*              return <Chip label={item} variant="outlined" onDelete={handleSubscribeDelete(idx)} />*/}
+      {/*            })*/}
+      {/*          }*/}
+      {/*        </Stack>*/}
+      {/*        <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onSubscribeTextChange} value={subscribeText} />*/}
+      {/*        <Button variant="outlined" onClick={handleSubscribeAdd}>Add</Button>*/}
+      {/*      </Stack>*/}
+      {/*    </Stack>*/}
+      {/*    <DialogActions>*/}
+      {/*      <Button variant="outlined" onClick={handleSubscribeDelete}>Delete</Button>*/}
+      {/*      <Button onClick={handleSubcribeClose}>Cancel</Button>*/}
+      {/*      <Button type="submit" onClick={handleSubscribe}>Confirm</Button>*/}
+      {/*    </DialogActions>*/}
+      {/*  </Dialog>*/}
+      {/*</React.Fragment>*/}
+
+          <React.Fragment>
+            <Dialog
+                open={subscribeOpen}
+                onClose={handleSubcribeClose}
+                PaperProps={{
+                  component: 'form',
+                  onSubmit: (event) => {
+                    event.preventDefault();
+                    handleSubcribeClose();
+                  },
+                  sx: {
+                    width: "60%", // 增加宽度为屏幕的 60%
+                    maxWidth: "600px", // 设置最大宽度为 600px
+                    padding: 4, // 增加内部填充
+                    margin: 'auto', // 使 Dialog 居中
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center' // 使内容水平居中
+                  }
+                }}
+            >
+              <DialogTitle>Subscribe</DialogTitle>
+              <Stack
+                  direction="column"
+                  spacing={2} // 设置间距
+                  sx={{ width: "100%", padding: 2, alignItems: 'center' }} // 为内容增加填充并居中对齐
+              >
+                <Stack direction="row" spacing={1} sx={{ justifyContent: 'center', width: '100%' }}>
+                  {subscribeTags.map((item, idx) => (
+                      <Chip
+                          key={idx}
+                          label={item}
+                          variant="outlined"
+                          onDelete={handleSubscribeDelete(idx)}
+                          sx={{ margin: 0.5 }} // 设置每个标签的间距
+                      />
+                  ))}
+                </Stack>
+                <TextField
+                    id="outlined-basic"
+                    label="Input a label"
+                    variant="outlined"
+                    onChange={onSubscribeTextChange}
+                    value={subscribeText}
+                    fullWidth // 使 TextField 充满宽度
+                    sx={{ marginBottom: 2 }} // 为 TextField 设置下方间距
+                />
+                <Button variant="outlined" onClick={handleSubscribeAdd} fullWidth>
+                  Add
+                </Button>
               </Stack>
-              <TextField id="outlined-basic" label="Input a label" variant="outlined" onChange={onSubscribeTextChange} value={subscribeText} />
-              <Button variant="outlined" onClick={handleSubscribeAdd}>Add</Button>
-            </Stack>
-          </Stack>
-          <DialogActions>
-            <Button variant="outlined" onClick={handleSubscribeDelete}>Delete</Button>
-            <Button onClick={handleSubcribeClose}>Cancel</Button>
-            <Button type="submit" onClick={handleSubscribe}>Confirm</Button>
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
-    </Stack>
+              <DialogActions sx={{ justifyContent: 'center', width: '100%' }}> {/* 居中对齐按钮 */}
+                {/*<Button variant="outlined" onClick={handleSubscribeDelete}>Delete</Button>*/}
+                <Button onClick={handleSubcribeClose}>Cancel</Button>
+                <Button type="submit" onClick={handleSubscribe}>Confirm</Button>
+              </DialogActions>
+            </Dialog>
+          </React.Fragment>
+
+
+
+
+        </Stack>
   </Box>
   );
 }
