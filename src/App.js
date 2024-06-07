@@ -117,6 +117,7 @@ function App() {
 
   const handleDeleteItem = () => {
     PictureManiputingUtil.setPictureTags(selector, selectorTags, "delete")
+    removeElement(items,selector)
     setOpen(false)
 
   }
@@ -236,7 +237,6 @@ function App() {
       console.log(subscribeTags)
 
     }
-
   }
 
 
